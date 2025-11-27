@@ -11,22 +11,27 @@ const Login: React.FC = () => {
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
 
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    setLoading(true);
-    setError('');
+  // Для разработки
+const API_BASE = process.env.NODE_ENV === 'production' 
+  ? 'https://your-backend.herokuapp.com' 
+  : 'http://localhost:8000';
 
-    try {
-      const response = await axios.post('http://localhost:8000/auth/login', formData);
-      localStorage.setItem('access_token', response.data.access_token);
-      localStorage.setItem('user', JSON.stringify(response.data.user));
-      navigate('/admin');
-    } catch (err: any) {
-      setError(err.response?.data?.detail || 'Login failed. Please try again.');
-    } finally {
-      setLoading(false);
-    }
-  };
+const handleSubmit = async (e: React.FormEvent) => {
+  e.preventDefault();
+  setLoading(true);
+  setError('');
+
+  try {
+    const response = await axios.post(`${API_BASE}/auth/login`, formData);
+    localStorage.setItem('access_token', response.data.access_token);
+    localStorage.setItem('user', JSON.stringify(response.data.user));
+    navigate('/admin');
+  } catch (err: any) {
+    setError(err.response?.data?.detail || 'Login failed. Please try again.');
+  } finally {
+    setLoading(false);
+  }
+};
 
   return (
     <div className="auth-form">
